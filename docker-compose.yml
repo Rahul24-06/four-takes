@@ -1,0 +1,8 @@
+services:
+  four-takes:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      - ./clips:/app/clips   # drop the official clip set here for batch runs
