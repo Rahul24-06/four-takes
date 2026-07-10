@@ -1,7 +1,5 @@
 # 🎬 FOUR TAKES — AI Video Captioning Studio
 
-**AMD Developer Hackathon: ACT II · Track 2 (Video Captioning) · Best Use of Gemma**
-
 *Crafted by The Maker (Rahul D)*
 
 One clip. Four voices. A grounded, self-judging caption studio where **Gemma** (Gemma 4 31B / Gemma 3 27B — env-configurable)
@@ -10,8 +8,6 @@ same facts in four unmistakable styles: **formal, sarcastic, humorous-tech, and
 humorous-non-tech** — each caption scored by an internal LLM judge *before* you
 ever see it.
 
-## The USP
-
 **The only video captioning studio that QCs itself.** Every caption ships
 pre-judged — an internal LLM judge scores accuracy and tone against a strict
 rubric before output, and anything below 8/8 is automatically retaken. In a
@@ -19,29 +15,9 @@ market afraid of AI hallucinations in brand content, Four Takes is
 **brand-safe by construction**: all four voices are written from one
 facts-locked scene dossier, so they cannot contradict the video or each other.
 
-## Who it's for
-
-Social agencies (one client video → platform-matched tones for LinkedIn, X,
-Instagram in one pass, with QC scores to show the client) · creators and
-YouTube studios (A/B-testable descriptions and Shorts captions — built by a
-creator, for creators) · e-commerce catalogs (formal spec + playful social
-caption per product video, via the batch API) · media archives (the dossier
-itself is structured, searchable video metadata) · video platforms (embed
-caption-QC as an API instead of building it).
-
-## Scale & economics
-
-Stateless Docker container → horizontal scale behind any load balancer.
-Inference is serverless on Fireworks AI: no GPU ops, pure per-clip cost
-(~9–13 Gemma calls ≈ a few cents), mapping cleanly onto the in-app Creator
-($9/mo) and Studio ($29/mo) tiers. Batch processing ships today
-(`scripts/batch.py`). The container deploys unchanged to **AMD Developer
-Cloud**. Because Gemma is open-weight (Apache 2.0), custom brand voices are a
-fine-tune away — the persona system is the platform.
-
 ## Why it scores well
 
-Track 2 is judged by an LLM on **accuracy** and **tone**. Four Takes attacks both:
+It is judged by an LLM on **accuracy** and **tone**. Four Takes attacks both:
 
 1. **Grounding beats hallucination.** ffmpeg samples frames uniformly across the
    FULL clip duration (start → end, so the ending is never missed) plus the
@@ -87,10 +63,9 @@ Gemma 4 26B, or Gemma 3 27B. Reasoning-style outputs (Gemma 4 emits
 `<thought>` blocks) are stripped automatically, so captions always come out
 clean.
 
-### Free dev mode (no Fireworks credits needed)
+### Dev mode
 
-For local testing you can point the app at Google AI Studio's free
-OpenAI-compatible endpoint:
+For local testing:
 
 ```
 FIREWORKS_API_KEY=AQ.your_google_ai_studio_key
@@ -101,26 +76,9 @@ JUDGE_MODEL=models/gemma-4-31b-it
 ```
 
 Note: Whisper isn't available on this endpoint, so clips are treated as
-silent during dev. **Official submission runs must use Fireworks AI.**
+silent during dev. 
 
-## Quick start (Docker — required by the hackathon)
-
-```bash
-cp .env.example .env        # add your FIREWORKS_API_KEY
-docker compose up --build
-# open http://localhost:8000 — drop a clip, hit ROLL FILM
 ```
-
-## Batch mode (official clip set)
-
-```bash
-mkdir clips && cp /path/to/official/*.mp4 clips/
-docker compose run four-takes python scripts/batch.py --clips clips --out results.json
-```
-
-`results.json` contains one entry per clip with all four styles plus internal
-judge scores. Adjust the output shape in `scripts/batch.py` on launch day when
-the official submission format is revealed — the pipeline won't change.
 
 ## Configuration
 
