@@ -6,3 +6,4 @@ services:
     env_file: .env
     volumes:
       - ./clips:/app/clips   # drop the official clip set here for batch runs
+      - ./data:/app/data     # persistent library: clips, captions, waitlist
