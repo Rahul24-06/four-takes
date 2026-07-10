@@ -2,11 +2,14 @@
 
 import base64
 import datetime
+import os
 import json
 import shutil
 import threading
 import uuid
 from pathlib import Path
+
+import requests
 
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
@@ -138,10 +141,16 @@ async def waitlist(payload: dict):
     plan = str(payload.get("plan", "waitlist")).strip()
     if "@" not in email or "." not in email or len(email) > 120:
         return JSONResponse({"error": "invalid email"}, status_code=400)
-    with open(DATA / "waitlist.jsonl", "a") as fh:
-        fh.write(json.dumps({"email": email, "plan": plan,
-                             "ts": datetime.datetime.utcnow().isoformat()})
-                 + "\n")
+    entry = {"email": email, "plan": plan,
+             "ts": datetime.datetime.utcnow().isoformat()}
+    with open(DATA / "waitlist.jsonl", "a") as fh:  # local backup, always
+        fh.write(json.dumps(entry) + "\n")
+    webhook = os.getenv("WAITLIST_WEBHOOK_URL", "").strip()
+    if webhook:  # persistent copy (e.g. Google Sheet) — never blocks signup
+        try:
+            requests.post(webhook, json=entry, timeout=10)
+        except Exception:
+            pass
     return {"ok": True}
 
 
