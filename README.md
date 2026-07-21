@@ -2,7 +2,7 @@
 
 *Crafted by The Maker (Rahul D)*
 
-![Alt text description](im.png)
+![Alt text descriptions](im.png)
 
 One clip. Four voices. A grounded, self-judging caption studio where **Gemma** (Gemma 4 31B / Gemma 3 27B — env-configurable)
 (via **Fireworks AI**, running on AMD hardware) watches your video and delivers the
